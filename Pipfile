@@ -12,6 +12,11 @@ django-allauth = "*"
 whitenoise = "*"
 pillow = "*"
 django-cors-headers = "*"
+gunicorn = "*"
+config = "*"
+dj-database-url = "*"
+django-heroku = "*"
+python-decouple = "*"
 
 [dev-packages]
 
