@@ -1,13 +1,31 @@
 from rest_framework import serializers
-from . import models
+from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth.models import BaseUserManager
+from rest_framework.authtoken.models import Token
+from .models import Post
 
+
+User = get_user_model()
 
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Post
-        fields = ['id','title', 'content', 'author','date_posted']
+        fields = ('id', 'author', 'title', 'body', 'created_at',)
+        model = Post
 
-class ProfileSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=300, required=True)
+    password = serializers.CharField(required=True, write_only=True)
+
+class AuthUserSerializer(serializers.ModelSerializer):
+    # auth_token = serializers.SerializerMethodField()
     class Meta:
-        model = models.Profile
-        fields = ['id','first_name', 'last_name', 'location', 'profile_info', 'picture']
+         model = User
+         fields = ('id', 'email', 'username')
+        #  read_only_fields = ('id', 'auth_token')
+    
+    def get_auth_token(self, obj):
+        token = Token.objects.create(user=obj)
+        return token.key
+
+class EmptySerializer(serializers.Serializer):
+    pass
